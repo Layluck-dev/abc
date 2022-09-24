@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, make_response, request
 
-def launchServer(test_config=None):
+def create_app(test_config=None):
     server = Flask(__name__)
     chain = None
     pool = None
@@ -14,3 +14,5 @@ def launchServer(test_config=None):
     @server.get(baseUrl + 'pool/index')
     def getPool():
         return None
+
+    return server
