@@ -18,3 +18,8 @@ For more information see [this page](https://uoa-eresearch.github.io/eresearch-c
 # Run Flask 
 To run the server locally: `flask --app blockchain --debug run`  
 also rename the file folder to 'blockchain' to prevent import issues :^)
+
+# OPDR 1-2
+- Why are timestamps important?  
+Because a timestamp is used to generate a hash. Therefore if the timetsamp is tempered with, the hash and by extension the blockchain will be rendered inavild.  
+Ensuring the legitimacy of transactions.
