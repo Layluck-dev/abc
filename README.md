@@ -17,3 +17,4 @@ For more information see [this page](https://uoa-eresearch.github.io/eresearch-c
 
 # Run Flask 
 To run the server locally: `flask --app blockchain --debug run`  
+also rename the file folder to 'blockchain' to prevent import issues :^)
