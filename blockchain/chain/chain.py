@@ -1,4 +1,7 @@
+
+from ..pool.pool import Pool
 from ..block.block import Block
+from flask import jsonify, make_response
 
 class Chain:
     def __init__(self, blockchain:list = []) -> None:
@@ -21,11 +24,12 @@ class Chain:
         
         return mostValuedTransaction
     
-    def appendBlock(self, pool:list) -> int:
-        # TODO check pool
+    def appendBlock(self, pool:Pool) -> int:
+        if not pool.list:
+            return make_response(jsonify({"info":"There are no current transactions", "status":"500"}), 500)
         
         transaction = self.getMostValuable(pool)
-        #TODO remove from pool
+        pool.list.remove(transaction)
         
         if not self.chain:
             return self.generate(transaction)
@@ -39,4 +43,5 @@ class Chain:
         
     def nuke(self):
         self.chain = []
+        return make_response(jsonify({"info":"and so ends this thread...", "status":"200"}),200)
         
