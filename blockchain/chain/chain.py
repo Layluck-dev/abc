@@ -1,4 +1,6 @@
 
+from multiprocessing import pool
+from pprint import pprint
 from ..pool.pool import Pool
 from ..block.block import Block
 from flask import jsonify, make_response
@@ -8,7 +10,6 @@ class Chain:
         self.chain = blockchain
     
     def generate(self, transaction:dict) -> int:
-        # self.reset()
         initialBlock = Block(1, transaction).generateBlock(self.chain)
         self.chain.append(initialBlock)
         
@@ -16,7 +17,7 @@ class Chain:
     
     def getMostValuable(self, transactions:list) -> dict:
         latestTransaction       = transactions[-1]
-        mostValuedTransaction   = None
+        mostValuedTransaction   = latestTransaction
         
         for t in transactions:
             if(t["amount"] > latestTransaction["amount"]):
@@ -28,15 +29,16 @@ class Chain:
         if not pool.list:
             return make_response(jsonify({"info":"There are no current transactions", "status":"500"}), 500)
         
-        transaction = self.getMostValuable(pool)
+        pprint(pool.list)
+        transaction = self.getMostValuable(pool.list)
+        pprint(transaction)
         pool.list.remove(transaction)
         
         if not self.chain:
             return self.generate(transaction)
         
-        priorBlock = self.chain[-1]
-        
-        initialBlock = Block(priorBlock["index"]+1, transaction, priorBlock["currentHash"]).generateBlock(self.chain)
+        priorBlock      = self.chain[-1]
+        initialBlock    = Block(priorBlock["index"]+1, transaction, priorBlock["currentHash"]).generateBlock(self.chain)
         self.chain.append(initialBlock)
         
         return self.chain

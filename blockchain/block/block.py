@@ -14,14 +14,14 @@ class Transaction(TypedDict):
 class BlockData(TypedDict):
     index:        int
     timestamp:    datetime
-    proof:        None
+    proof:        str
     priorHash:    str
     currentHash:  str
     transaction:  Transaction
 
 
 class Block:
-    def __init__(self, index:int, transaction:Transaction, priorBlockHash:None | str = None) -> None:
+    def __init__(self, index:int, transaction:Transaction, priorBlockHash:str = "initial") -> None:
         self.index          = index
         self.transaction    = transaction
         self.priorBlockHash = priorBlockHash
@@ -39,9 +39,9 @@ class Block:
         return {
             "index":        self.index,
             "timestamp":    datetime.now(),
-            "proof":        None,
+            "proof":        "This cannot be None... so have this temp string c:",
             "priorHash":    self.priorBlockHash,
-            "currentHash":  None,
+            "currentHash":  self.generateHash(),
             "transaction":  self.transaction
         }
     
