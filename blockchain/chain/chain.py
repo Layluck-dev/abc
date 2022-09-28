@@ -1,9 +1,7 @@
 
-from multiprocessing import pool
-from pprint import pprint
 from ..pool.pool import Pool
 from ..block.block import Block
-from flask import jsonify, make_response
+from flask import jsonify, make_response, Response
 
 class Chain:
     def __init__(self, blockchain:list = []) -> None:
@@ -29,9 +27,7 @@ class Chain:
         if not pool.list:
             return make_response(jsonify({"info":"There are no current transactions", "status":"500"}), 500)
         
-        pprint(pool.list)
         transaction = self.getMostValuable(pool.list)
-        pprint(transaction)
         pool.list.remove(transaction)
         
         if not self.chain:
@@ -43,7 +39,7 @@ class Chain:
         
         return self.chain
         
-    def nuke(self):
+    def nuke(self) -> Response:
         self.chain = []
         return make_response(jsonify({"info":"and so ends this thread...", "status":"200"}),200)
-        
+    

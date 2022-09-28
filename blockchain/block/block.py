@@ -2,7 +2,7 @@
 from datetime import datetime
 import hashlib
 import json
-from typing import Dict, TypedDict
+from typing import TypedDict
 
 blockHash_type = None | str
 
@@ -39,7 +39,7 @@ class Block:
         return {
             "index":        self.index,
             "timestamp":    datetime.now(),
-            "proof":        "This cannot be None... so have this temp string c:",
+            "proof":        self.proofOfWork(priorBlock),
             "priorHash":    self.priorBlockHash,
             "currentHash":  self.generateHash(),
             "transaction":  self.transaction
@@ -50,9 +50,14 @@ class Block:
         return hashlib.sha256(blockData).hexdigest()
     
     def proofOfWork(self, priorBlock) -> int:
-        priorProof  = priorBlock['proof']
-        timestamp   = self.timestamp
+        currentProof = 0
+        
+        while self.validate(priorBlock, currentProof) is False:
+            currentProof += 1
 
-        proof = 0
-        # TODO check proof of work
-        return proof
+        return currentProof
+
+    def validate(self, priorBlock, currentProof:int) -> bool:
+        attemp = (priorBlock["proof"]+currentProof+str(self.timestamp)).encode()
+        hashedAttemp = hashlib.sha256(attemp).hexdigest()
+        return hashedAttemp[:4] == "0000"
