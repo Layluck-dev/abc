@@ -1,5 +1,8 @@
 from datetime import datetime
+from typing import Any
 from flask import jsonify, make_response
+
+from ..types import TransactionData
 
 from ..pool.pool import Pool
 
@@ -7,9 +10,9 @@ class Transaction():
     def __init__(self, pool:Pool) -> None:
         self.pool = pool
         
-    def createTransaction(self, transactionReq):
+    def createTransaction(self, transactionReq:Any):
         try:
-            transactionData = {
+            transactionData:TransactionData = {
                 "timestamp":    datetime.now(),
                 "senderID":     int(transactionReq["senderID"]),
                 "receiverID":   int(transactionReq["receiverID"]),

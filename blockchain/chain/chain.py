@@ -1,19 +1,24 @@
 
+from ..types import TransactionData
 from ..pool.pool import Pool
-from ..block.block import Block
+from ..block.block import Block, BlockData
 from flask import jsonify, make_response, Response
 
 class Chain:
-    def __init__(self, blockchain:list = []) -> None:
+    def __init__(self, blockchain:list[BlockData] = []) -> None:
         self.chain = blockchain
     
-    def generate(self, transaction:dict) -> int:
-        initialBlock = Block(1, transaction).generateBlock(self.chain)
+    def generate(self, transaction:TransactionData) -> int:
+        lastBlock:BlockData | None = None
+        if len(self.chain) > 0:
+            lastBlock = self.chain[-1]
+
+        initialBlock = Block(1, transaction).generateBlock(lastBlock)
         self.chain.append(initialBlock)
         
         return self.chain
     
-    def getMostValuable(self, transactions:list) -> dict:
+    def getMostValuable(self, transactions:list) -> TransactionData:
         latestTransaction       = transactions[-1]
         mostValuedTransaction   = latestTransaction
         
@@ -23,7 +28,7 @@ class Chain:
         
         return mostValuedTransaction
     
-    def appendBlock(self, pool:Pool) -> int:
+    def appendBlock(self, pool:Pool) -> list[BlockData]:
         if not pool.list:
             return make_response(jsonify({"info":"There are no current transactions", "status":"500"}), 500)
         
@@ -34,7 +39,7 @@ class Chain:
             return self.generate(transaction)
         
         priorBlock      = self.chain[-1]
-        initialBlock    = Block(priorBlock["index"]+1, transaction, priorBlock["currentHash"]).generateBlock(self.chain)
+        initialBlock    = Block(priorBlock["index"]+1, transaction, priorBlock["currentHash"]).generateBlock(priorBlock)
         self.chain.append(initialBlock)
         
         return self.chain
