@@ -1,10 +1,10 @@
 from flask import jsonify, make_response, Response
 
-from ..types import BlockData, TransactionData
+from ..types import TransactionData
 
 class Pool():
     def __init__(self) -> None:
-        self.list:list[BlockData] = []
+        self.list:list[TransactionData] = []
         
     def appendTransaction(self, transaction:TransactionData) -> Response:
         self.list.append(transaction)

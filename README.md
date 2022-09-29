@@ -23,3 +23,18 @@ also rename the file folder to 'blockchain' to prevent import issues :^)
 - Why are timestamps important?  
 Because a timestamp is used to generate a hash. Therefore if the timetsamp is tempered with, the hash and by extension the blockchain will be rendered inavild.  
 Ensuring the legitimacy of transactions.
+
+# DevOps
+To satisfy the devops requirements assigned to me I have chosen follow a different path than assigned.  
+Because simply writing tests and having a 100% code coverage doesn't stop people from making stupid tests and not implementing certain safety features. Neither does it speed up developement.  
+
+## Static typing
+I have introduced static typing in this repository using mypy.  
+Check the health of the repository using: `mypy ./blockchain/*.py`
+### Why?
+Static typing allows a developer to see exactly what datatypes are expected everywhere.
+This prevents easy to miss mistakes and improves overal maintainability and readability.
+All of which prevents unnecessary reliance on tests which often take a lot of time rewriting when functionality changes. 
+
+## E2E tests
+TODO

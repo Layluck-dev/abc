@@ -1,17 +1,14 @@
-from flask import Flask, request
-
+from flask import Flask, request, jsonify, make_response
 from .transaction.transaction import Transaction
 from .chain.chain import Chain
 from .pool.pool import Pool
 
-from flask import jsonify, make_response
-
 def create_app(test_config=None):
-    server = Flask(__name__)
-    chain = Chain()
-    pool = Pool()
-    transaction = Transaction(pool)
-    baseUrl = "/api/"
+    server          = Flask(__name__)
+    chain           = Chain()
+    pool            = Pool()
+    transaction     = Transaction(pool)
+    baseUrl         = "/api/"
     
     @server.get(baseUrl + 'pool/poll')
     def pollPool():

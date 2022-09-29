@@ -1,9 +1,7 @@
 from datetime import datetime
 from typing import Any
 from flask import jsonify, make_response
-
 from ..types import TransactionData
-
 from ..pool.pool import Pool
 
 class Transaction():

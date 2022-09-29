@@ -13,18 +13,16 @@ class Block:
         self.timestamp      = datetime.now()
         
     
-    def generateBlock(self, block:BlockData | None) -> BlockData:
-        priorBlock:BlockData = {}
+    def generateBlock(self, priorBlock:BlockData | None) -> BlockData:
+        tempProof:int = 0
         
-        if not block:
-            priorBlock["proof"] = 0
-        else:
-            priorBlock = block
+        if priorBlock:
+            tempProof = priorBlock["proof"]
             
         return {
             "index":        self.index,
             "timestamp":    datetime.now(),
-            "proof":        self.proofOfWork(priorBlock),
+            "proof":        self.proofOfWork(tempProof),
             "priorHash":    self.priorBlockHash,
             "currentHash":  self.generateHash(),
             "transaction":  self.transaction
@@ -34,15 +32,15 @@ class Block:
         blockData = json.dumps(str(self.index) + str(self.timestamp) + self.priorBlockHash + json.dumps(self.transaction, sort_keys=True, indent=4, default=str)).encode("utf-8")
         return hashlib.sha256(blockData).hexdigest()
     
-    def proofOfWork(self, priorBlock:BlockData) -> int:
+    def proofOfWork(self, priorProof:int) -> int:
         currentProof:int = 0
         
-        while self.validate(priorBlock, currentProof) is False:
+        while self.validate(priorProof, currentProof) is False:
             currentProof += 1
 
         return currentProof
 
-    def validate(self, priorBlock:BlockData, currentProof:int) -> bool:
-        attemp = (str(priorBlock["proof"])+str(currentProof)+str(self.timestamp)).encode()
+    def validate(self, priorProof:int, currentProof:int) -> bool:
+        attemp = (str(priorProof)+str(currentProof)+str(self.timestamp)).encode()
         hashedAttemp = hashlib.sha256(attemp).hexdigest()
         return hashedAttemp[:5] == "00000"
