@@ -8,9 +8,11 @@ from ..types import BlockData, TransactionData
 class Block:
     def __init__(self, index:int, transaction:TransactionData, priorBlockHash:str = "initial") -> None:
         self.index          = index
-        self.transaction    = transaction
-        self.priorBlockHash = priorBlockHash
         self.timestamp      = datetime.now()
+        self.proof          = 0
+        self.priorBlockHash = priorBlockHash
+        self.currentHash    = ""
+        self.transaction    = transaction
         
     
     def generateBlock(self, priorBlock:BlockData | None) -> BlockData:
@@ -27,6 +29,14 @@ class Block:
             "currentHash":  self.generateHash(),
             "transaction":  self.transaction
         }
+        
+    def rehydrate(self, blockData:BlockData) -> None:
+        self.index          = blockData["index"]
+        self.timestamp      = blockData["timestamp"]
+        self.proof          = blockData["proof"]
+        self.priorBlockHash = blockData["priorHash"]
+        self.currentHash    = blockData["currentHash"]
+        self.transaction    = blockData["transaction"]
     
     def generateHash(self) -> str:
         blockData = json.dumps(str(self.index) + str(self.timestamp) + self.priorBlockHash + json.dumps(self.transaction, sort_keys=True, indent=4, default=str)).encode("utf-8")
@@ -40,7 +50,11 @@ class Block:
 
         return currentProof
 
-    def validate(self, priorProof:int, currentProof:int) -> bool:
-        attemp = (str(priorProof)+str(currentProof)+str(self.timestamp)).encode()
+    def validate(self, priorProof:int, currentProof:int, timestamp:datetime|None = None) -> bool:
+        time = self.timestamp
+        if timestamp is not None:
+            time = timestamp
+        
+        attemp = (str(priorProof)+str(currentProof)+str(time)).encode()
         hashedAttemp = hashlib.sha256(attemp).hexdigest()
         return hashedAttemp[:5] == "00000"
