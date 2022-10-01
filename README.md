@@ -37,4 +37,5 @@ This prevents easy to miss mistakes and improves overal maintainability and read
 All of which prevents unnecessary reliance on tests which often take a lot of time rewriting when functionality changes. 
 
 ## E2E tests
-TODO
+Import the postman collection and test the endpoints via postman.
+These tests cover some parts of the application from front to end and check for expected behaviour.
