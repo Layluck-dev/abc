@@ -1,30 +1,31 @@
 
-from datetime import datetime
 import hashlib
-import json
+import time
 
 from ..types import BlockData, TransactionData
 
 class Block:
     def __init__(self, index:int, transaction:TransactionData, priorBlockHash:str = "initial") -> None:
-        self.index          = index
-        self.timestamp      = datetime.now()
-        self.proof          = 0
-        self.priorBlockHash = priorBlockHash
-        self.currentHash    = ""
-        self.transaction    = transaction
+        self.index:int                   = index
+        self.timestamp:float             = time.time()
+        self.proof:int                   = 0
+        self.priorBlockHash:str          = priorBlockHash
+        self.currentHash:str             = ""
+        self.transaction:TransactionData = transaction
         
     
-    def generateBlock(self, priorBlock:BlockData | None) -> BlockData:
+    def generateBlock(self, priorBlock:BlockData | None = None) -> BlockData:
         tempProof:int = 0
         
         if priorBlock:
             tempProof = priorBlock["proof"]
-            
+        
+        self.proof = self.proofOfWork(tempProof)
+        
         return {
             "index":        self.index,
-            "timestamp":    datetime.now(),
-            "proof":        self.proofOfWork(tempProof),
+            "timestamp":    self.timestamp,
+            "proof":        self.proof,
             "priorHash":    self.priorBlockHash,
             "currentHash":  self.generateHash(),
             "transaction":  self.transaction
@@ -39,8 +40,7 @@ class Block:
         self.transaction    = blockData["transaction"]
     
     def generateHash(self) -> str:
-        blockData = json.dumps(str(self.index) + str(self.timestamp) + self.priorBlockHash + json.dumps(self.transaction, sort_keys=True, indent=4, default=str)).encode("utf-8")
-        return hashlib.sha256(blockData).hexdigest()
+        return hashlib.sha256(bytes(self.__str__(), 'utf-8')).hexdigest()
     
     def proofOfWork(self, priorProof:int) -> int:
         currentProof:int = 0
@@ -50,7 +50,7 @@ class Block:
 
         return currentProof
 
-    def validate(self, priorProof:int, currentProof:int, timestamp:datetime|None = None) -> bool:
+    def validate(self, priorProof:int, currentProof:int, timestamp:float|None = None) -> bool:
         time = self.timestamp
         if timestamp is not None:
             time = timestamp
@@ -58,3 +58,7 @@ class Block:
         attemp = (str(priorProof)+str(currentProof)+str(time)).encode()
         hashedAttemp = hashlib.sha256(attemp).hexdigest()
         return hashedAttemp[:5] == "00000"
+    
+    #omits current hash since this function is used to generate the current hash
+    def __str__(self) -> str:
+        return f"index: {self.index}, timestamp: {self.timestamp}, proof: {self.proof}, priorHash: {self.priorBlockHash}, transaction: ( timestamp: {self.transaction['timestamp']}, senderID: {self.transaction['senderID']}, receiverID: {self.transaction['receiverID']}, amount: {self.transaction['amount']})"
