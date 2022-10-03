@@ -1,4 +1,4 @@
-from datetime import datetime
+import time
 from typing import Any
 from flask import jsonify, make_response
 from ..types import TransactionData
@@ -11,7 +11,7 @@ class Transaction():
     def createTransaction(self, transactionReq:Any):
         try:
             transactionData:TransactionData = {
-                "timestamp":    datetime.now(),
+                "timestamp":    time.time(),
                 "senderID":     int(transactionReq["senderID"]),
                 "receiverID":   int(transactionReq["receiverID"]),
                 "amount":       float(transactionReq["amount"])

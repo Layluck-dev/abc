@@ -3,14 +3,14 @@ from datetime import datetime
 from typing import TypedDict
 
 class TransactionData(TypedDict):
-    timestamp:  datetime
+    timestamp:  float
     senderID:   int
     receiverID: int
     amount:     float
 
 class BlockData(TypedDict):
     index:        int
-    timestamp:    datetime
+    timestamp:    float
     proof:        int
     priorHash:    str
     currentHash:  str

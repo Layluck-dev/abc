@@ -30,7 +30,7 @@ class Chain:
     
     def appendBlock(self, pool:Pool) -> Response:
         if not pool.list:
-            return make_response(jsonify({"info":"There are no current transactions", "status":"500"}), 500)
+            return make_response(jsonify({"info":"There are no current transactions", "status":"404"}), 404)
         
         transaction = self.getMostValuable(pool.list)
         pool.list.remove(transaction)
