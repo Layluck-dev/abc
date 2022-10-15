@@ -1,6 +1,5 @@
-from pprint import pp
 import time
-from typing import Any, Tuple
+from typing import Any
 from flask import jsonify, make_response
 
 from ..transaction.input import TransActionInput

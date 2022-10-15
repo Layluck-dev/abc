@@ -1,6 +1,6 @@
 
-from pprint import pp
-from typing import Any, Tuple
+import hashlib
+from typing import Tuple
 import uuid
 
 from ..types import TransActionOutput, TransactionData
@@ -10,7 +10,7 @@ class TransActionInput:
         return balance-amount
     
     def generateKey(self, balance: float, amount: float, isRemainder: bool) -> str:
-        return f"{balance}{str(isRemainder)}{amount}"
+        return hashlib.sha256(bytes(f"{balance}{str(isRemainder)}{amount}", 'utf-8')).hexdigest()
     
     def generateOutputs(self, transaction: TransactionData) -> Tuple[TransActionOutput, TransActionOutput] | None:    
         remainder = self.validateBalance(transaction["balance"], transaction["amount"])
