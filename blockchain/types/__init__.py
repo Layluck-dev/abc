@@ -1,12 +1,18 @@
+from typing import Tuple, TypedDict
 
-from datetime import datetime
-from typing import TypedDict
-
+class TransActionOutput(TypedDict):
+    id: str
+    hash: str
+    amount: float
+    isRemainder: bool
+    
 class TransactionData(TypedDict):
     timestamp:  float
     senderID:   int
     receiverID: int
     amount:     float
+    balance:    float
+    transactionOutput: Tuple[TransActionOutput, TransActionOutput] | None
 
 class BlockData(TypedDict):
     index:        int

@@ -1,6 +1,9 @@
+from pprint import pp
 import time
-from typing import Any
+from typing import Any, Tuple
 from flask import jsonify, make_response
+
+from ..transaction.input import TransActionInput
 from ..types import TransactionData
 from ..pool.pool import Pool
 
@@ -11,16 +14,21 @@ class Transaction():
     def createTransaction(self, transactionReq:Any):
         try:
             transactionData:TransactionData = {
-                "timestamp":    time.time(),
-                "senderID":     int(transactionReq["senderID"]),
-                "receiverID":   int(transactionReq["receiverID"]),
-                "amount":       float(transactionReq["amount"])
+                "timestamp":            time.time(),
+                "senderID":             int(transactionReq["senderID"]),
+                "receiverID":           int(transactionReq["receiverID"]),
+                "amount":               float(transactionReq["amount"]),
+                "balance":              float(transactionReq["balance"]),
+                "transactionOutput":    None
             }
         except:
             return make_response(jsonify({"info":"malformed request", "status":"400"}), 400)
         
-        if not transactionData["amount"] > 0:
+        if not transactionData["amount"] >= 0:
             return make_response(jsonify({"info":"no cheeky exploits for you", "status":"400"}), 400)
         
+        inputObject = TransActionInput()
+        transactionData["transactionOutput"] = inputObject.generateOutputs(transactionData)
+    
         return self.pool.appendTransaction(transactionData)
     
