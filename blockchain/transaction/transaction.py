@@ -2,13 +2,16 @@ import time
 from typing import Any
 from flask import jsonify, make_response
 
+from blockchain.pool.transactionPool import TransactionPool
+
 from ..transaction.input import TransActionInput
 from ..types import TransactionData
 from ..pool.pool import Pool
 
 class Transaction():
-    def __init__(self, pool:Pool) -> None:
+    def __init__(self, pool:Pool, transactionOutputs:TransactionPool) -> None:
         self.pool = pool
+        self.transactionOutputs = transactionOutputs
         
     def createTransaction(self, transactionReq:Any):
         try:
@@ -27,7 +30,12 @@ class Transaction():
             return make_response(jsonify({"info":"no cheeky exploits for you", "status":"400"}), 400)
         
         inputObject = TransActionInput()
-        transactionData["transactionOutput"] = inputObject.generateOutputs(transactionData)
+        outputs = inputObject.generateOutputs(transactionData)
+        
+        self.transactionOutputs.appendTransaction(outputs[0])
+        self.transactionOutputs.appendTransaction(outputs[1])
+        
+        transactionData["transactionOutput"] = outputs
     
         return self.pool.appendTransaction(transactionData)
     

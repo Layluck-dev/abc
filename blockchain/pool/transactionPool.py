@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Any, Tuple
 from flask import jsonify, make_response, Response
 
 from ..types import TransActionOutput
@@ -13,17 +13,6 @@ class TransactionPool():
     def pollPool(self) -> Response:
         return make_response(jsonify(self.list), 200)
     
-    def get(self, idOrHash:str, remove:bool=False) -> Response:
-        result = self.find(idOrHash)
-        
-        if result[0] == -1:
-            return make_response(jsonify({"info": "transactionoutput not found", "status": "404"}), 404)
-        
-        if remove:
-            self.list.pop(result[0])
-            
-        return make_response(jsonify(result[1]), 200)
-    
     def find(self, idOrHash:str) -> Tuple[int, TransActionOutput|None]:        
         for i, transactionOutput in enumerate(self.list):
             if transactionOutput["id"] == idOrHash:
@@ -33,3 +22,38 @@ class TransactionPool():
                 return (i, transactionOutput)
             
         return (-1, None)
+
+    def get(self, idOrHash:str, remove:bool=False) -> TransActionOutput | None:
+        result = self.find(idOrHash)
+        
+        if result[0] == -1:
+            return None
+        
+        if remove:
+            self.list.pop(result[0])
+            
+        return result[1]
+    
+    def remove(self, idOrHash) -> Response:
+        result = self.get(idOrHash, True)
+        
+        if not result:
+            return make_response(jsonify({"info": "transactionoutput not found", "status": "404"}), 404)
+        
+        return make_response(jsonify(result), 200)
+    
+    def pollOutput(self, transactionReq:Any) -> Response:
+        try:
+            requestData = {
+                "id":   str(transactionReq["id"]),
+                "hash": str(transactionReq["hash"]),
+            }
+        except:
+            return make_response(jsonify({"info":"malformed request", "status":"400"}), 400)
+        
+        result = self.get(requestData["hash"]+requestData["id"])
+        
+        if not result:
+            return make_response(jsonify({"info": "transactionOutput not found"}), 404)
+        
+        return make_response(jsonify(result), 200)
