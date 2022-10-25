@@ -3,6 +3,8 @@ from typing import Any
 from flask import jsonify, make_response
 
 from blockchain.pool.transactionPool import TransactionPool
+from blockchain.transaction.verification import TransactionVerification
+from blockchain.transactionRequest.mockClient import Client
 
 from ..transaction.input import TransActionInput
 from ..types import TransactionData
@@ -21,6 +23,8 @@ class Transaction():
                 "receiverID":           int(transactionReq["receiverID"]),
                 "amount":               float(transactionReq["amount"]),
                 "balance":              float(transactionReq["balance"]),
+                "publicKey":            str(transactionReq["publicKey"]),
+                "signature":            str(transactionReq["signature"]),
                 "transactionOutput":    None
             }
         except:
@@ -28,6 +32,14 @@ class Transaction():
         
         if not transactionData["amount"] >= 0:
             return make_response(jsonify({"info":"no cheeky exploits for you", "status":"400"}), 400)
+        
+        #Temporarily mock a transaction, because there is no client currently
+        mockClient = Client()
+        transactionData = mockClient.pseudoTransaction
+        
+        transactionVerification = TransactionVerification(transactionData)
+        if not transactionVerification.verifyTransaction():
+            return make_response(jsonify({"info":"signature does not resolve", "status":"401"}), 401)
         
         inputObject = TransActionInput()
         outputs = inputObject.generateOutputs(transactionData)

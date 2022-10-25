@@ -12,6 +12,8 @@ class TransactionData(TypedDict):
     receiverID: int
     amount:     float
     balance:    float
+    publicKey:  str
+    signature:  str
     transactionOutput: Tuple[TransActionOutput, TransActionOutput] | None
 
 class BlockData(TypedDict):
