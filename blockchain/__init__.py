@@ -1,3 +1,4 @@
+from email.mime import base
 from flask import Flask, request, jsonify, make_response
 
 from blockchain.pool.transactionPool import TransactionPool
@@ -25,11 +26,11 @@ def create_app(test_config=None):
     
     @server.get(baseUrl + 'block/new')
     def generateBlock():
-        return Chain.appendBlock(chain, pool)
+        return chain.appendBlock(chain, pool)
     
     @server.get(baseUrl + 'blockchain/nuke')
     def nukeChain():
-        return Chain.nuke()
+        return chain.nuke()
     
     @server.get(baseUrl + 'blockchain/poll')
     def pollChain():
@@ -46,5 +47,9 @@ def create_app(test_config=None):
     @server.put(baseUrl + 'transactionOutputs/poll')
     def pollTransactionOutput():
         return transactionOutputs.pollOutput(request.json)
+    
+    @server.get(baseUrl + 'blockchain/length')
+    def getChainlength():
+        return chain.getHeight()
 
     return server

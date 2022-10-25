@@ -48,3 +48,6 @@ class Chain:
         self.chain.clear()
         return make_response(jsonify({"info":"and so ends this thread...", "status":"200"}),200)
     
+    def getLength(self) -> Response:
+        return make_response(jsonify({"info":len(self.chain)}), 200)
+    
