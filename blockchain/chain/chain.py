@@ -1,12 +1,14 @@
 
+from blockchain.pool.transactionPool import TransactionPool
 from ..types import TransactionData
 from ..pool.pool import Pool
 from ..block.block import Block, BlockData
 from flask import jsonify, make_response, Response
 
 class Chain:
-    def __init__(self, blockchain:list[BlockData] = []) -> None:
-        self.chain = blockchain
+    def __init__(self, transactionPool: TransactionPool) -> None:
+        self.chain:list[BlockData] = []
+        self.transactionPool = transactionPool
     
     def generate(self, transaction:TransactionData) -> list[BlockData]:
         lastBlock:BlockData | None = None

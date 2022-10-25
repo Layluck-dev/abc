@@ -10,9 +10,9 @@ from .pool.pool import Pool
 
 def create_app(test_config=None):
     server              = Flask(__name__)
-    chain               = Chain()
     pool                = Pool()
     transactionOutputs  = TransactionPool()
+    chain               = Chain(transactionOutputs)
     transaction         = Transaction(pool, transactionOutputs)
     baseUrl             = "/api/"
     

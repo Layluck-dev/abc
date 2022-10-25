@@ -1,6 +1,8 @@
 
 import hashlib
 import time
+from blockchain.pool.transactionPool import TransactionPool
+from blockchain.transaction.alphaHelper import AlphaTransaction
 
 from ..types import BlockData, TransactionData
 
@@ -14,13 +16,25 @@ class Block:
         self.transaction:TransactionData = transaction
         
     
-    def generateBlock(self, priorBlock:BlockData | None = None) -> BlockData:
-        tempProof:int = 0
+    def generateBlock(self, transactionPool:TransactionPool, priorBlock:BlockData | None = None) -> BlockData:
+
+        if not priorBlock:
+            input = AlphaTransaction()
+            alphaTransaction = input.getAlphaTransaction()
+            
+            transactionPool.appendTransaction(alphaTransaction["transactionOutput"][0])
+            transactionPool.appendTransaction(alphaTransaction["transactionOutput"][1])
+            
+            return {
+                "index":        self.index,
+                "timestamp":    self.timestamp,
+                "proof":        0,
+                "priorHash":    self.priorBlockHash,
+                "currentHash":  self.generateHash(),
+                "transaction":  alphaTransaction
+            }
         
-        if priorBlock:
-            tempProof = priorBlock["proof"]
-        
-        self.proof = self.proofOfWork(tempProof)
+        self.proof = self.proofOfWork(priorBlock["proof"])
         
         return {
             "index":        self.index,
