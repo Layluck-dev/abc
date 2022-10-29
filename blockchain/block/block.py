@@ -22,14 +22,13 @@ class Block:
             input = AlphaTransaction()
             alphaTransaction = input.getAlphaTransaction()
             
-            transactionPool.appendTransaction(alphaTransaction["transactionOutput"][0])
-            transactionPool.appendTransaction(alphaTransaction["transactionOutput"][1])
+            transactionPool.appendTransactions(alphaTransaction["transactionOutput"])
             
             return {
                 "index":        self.index,
                 "timestamp":    self.timestamp,
                 "proof":        0,
-                "priorHash":    self.priorBlockHash,
+                "priorHash":    "AlphaBlock",
                 "currentHash":  self.generateHash(),
                 "transaction":  alphaTransaction
             }

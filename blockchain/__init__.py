@@ -13,7 +13,7 @@ def create_app(test_config=None):
     pool                = Pool()
     transactionOutputs  = TransactionPool()
     chain               = Chain(transactionOutputs)
-    transaction         = Transaction(pool, transactionOutputs)
+    transaction         = Transaction(pool, transactionOutputs, chain)
     baseUrl             = "/api/"
     
     @server.get(baseUrl + 'pool/poll')
@@ -52,4 +52,8 @@ def create_app(test_config=None):
     def getChainlength():
         return chain.getHeight()
 
+    @server.get(baseUrl + 'balance')
+    def getBalance():
+        return chain.getBalanceByUid(request.json)
+    
     return server

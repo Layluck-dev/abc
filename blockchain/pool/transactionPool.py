@@ -10,6 +10,10 @@ class TransactionPool():
     def appendTransaction(self, transactionOutput:TransActionOutput) -> None:
         self.list.append(transactionOutput)
         
+    def appendTransactions(self, outputs:Tuple[TransActionOutput, TransActionOutput]) -> None:
+        self.list.append(outputs[0])
+        self.list.append(outputs[1])
+        
     def pollPool(self) -> Response:
         return make_response(jsonify(self.list), 200)
     
@@ -57,3 +61,18 @@ class TransactionPool():
             return make_response(jsonify({"info": "transactionOutput not found"}), 404)
         
         return make_response(jsonify(result), 200)
+    
+    def openRemainderByUid(self, userID:int) -> TransActionOutput | None:
+        for transaction in self.list:
+            if transaction["receiverID"] == userID and transaction["isRemainder"]:
+                return transaction
+        
+        return None
+    
+    def getOpenRemainder(self, userID:int) -> Response:
+        result = self.openRemainderByUid(userID)
+        
+        if not result:
+            return make_response(jsonify({"info": "no open transaction found for this user", "status": "404"}), 404)
+        
+        return make_response(jsonify(result))
