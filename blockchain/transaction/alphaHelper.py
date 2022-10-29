@@ -1,7 +1,7 @@
 import hashlib
 import time
-from blockchain.transaction.input import TransActionInput
-from blockchain.types import TransactionData
+from .input import TransActionInput
+from ..types import TransactionData
 
 from ecdsa import SigningKey, NIST521p
 

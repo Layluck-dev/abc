@@ -1,6 +1,6 @@
 
 from typing import Any
-from blockchain.pool.transactionPool import TransactionPool
+from ..pool.transactionPool import TransactionPool
 from ..types import TransActionOutput, TransactionData
 from ..pool.pool import Pool
 from ..block.block import Block, BlockData

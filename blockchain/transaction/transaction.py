@@ -1,11 +1,11 @@
 import time
 from typing import Any
 from flask import jsonify, make_response
-from blockchain.chain.chain import Chain
+from ..chain.chain import Chain
 
-from blockchain.pool.transactionPool import TransactionPool
-from blockchain.transaction.verification import TransactionVerification
-from blockchain.transactionRequest.mockClient import Client
+from ..pool.transactionPool import TransactionPool
+from ..transaction.verification import TransactionVerification
+from ..transactionRequest.mockClient import Client
 
 from ..transaction.input import TransActionInput
 from ..types import TransactionData

@@ -1,7 +1,7 @@
 from email.mime import base
 from flask import Flask, request, jsonify, make_response
 
-from blockchain.pool.transactionPool import TransactionPool
+from .pool.transactionPool import TransactionPool
 
 from .chain.validation import ChainValidation
 from .transaction.transaction import Transaction

@@ -1,8 +1,8 @@
 
 import hashlib
 import time
-from blockchain.pool.transactionPool import TransactionPool
-from blockchain.transaction.alphaHelper import AlphaTransaction
+from ..pool.transactionPool import TransactionPool
+from ..transaction.alphaHelper import AlphaTransaction
 
 from ..types import BlockData, TransactionData
 
