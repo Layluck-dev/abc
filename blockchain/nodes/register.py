@@ -1,8 +1,8 @@
 from flask import jsonify, make_response, Response
 
 class NodeRegistry():
-    def __init__(self, nodes:list[str]) -> None:
-        self.registry:list[str] = nodes
+    def __init__(self) -> None:
+        self.registry:list[str] = []
         
     def registerNode(self, address:str) -> Response:
         self.registry.append(address)

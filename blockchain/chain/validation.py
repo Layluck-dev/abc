@@ -1,5 +1,7 @@
 
+import json
 import time
+from typing import Any
 from flask import jsonify, make_response, Response
 
 from ..types import BlockData, TransactionData
@@ -46,3 +48,12 @@ class ChainValidation():
     
     def hashComparison(self, currentBlockのpriorHash:str, priorBlockHash:str) -> bool:
         return currentBlockのpriorHash == priorBlockHash
+    
+    def getValidation(self, chain:Chain, chainReq:Any) -> Response:
+        try:
+            incomingChain = json.loads(chainReq)
+            tempChain = chain
+            tempChain.chain = incomingChain
+            return self.validate(tempChain)
+        except:
+            return make_response(jsonify({"info":"could not deserialise incoming request"}), 400)

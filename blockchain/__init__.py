@@ -1,6 +1,8 @@
 from email.mime import base
 from flask import Flask, request, jsonify, make_response
 
+from .nodes.register import NodeRegistry
+
 from .pool.transactionPool import TransactionPool
 
 from .chain.validation import ChainValidation
@@ -12,6 +14,7 @@ def create_app(test_config=None):
     server              = Flask(__name__)
     pool                = Pool()
     transactionOutputs  = TransactionPool()
+    nodeRegistry        = NodeRegistry()
     chain               = Chain(transactionOutputs)
     transaction         = Transaction(pool, transactionOutputs, chain)
     baseUrl             = "/api/"
@@ -55,5 +58,19 @@ def create_app(test_config=None):
     @server.get(baseUrl + 'balance')
     def getBalance():
         return chain.getBalanceByUid(request.json)
+    
+    @server.get(baseUrl + '/consensus')
+    def getGetChainValidation():
+        return ChainValidation().getValidation(chain, request.json)
+    
+    @server.post(baseUrl + '/assert')
+    def incomingChain():
+        isValid = ChainValidation().getValidation(chain, request.json).ok
+        
+        if isValid:
+            pass
+        
+        return make_response(jsonify({"info":"chain successfully consolidated","status":200}),200)
+        
     
     return server

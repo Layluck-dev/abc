@@ -1,5 +1,9 @@
 
+import json
 from typing import Any
+from ..nodes.register import NodeRegistry
+
+from ..nodes.requestHandler import RequestHandler
 from ..pool.transactionPool import TransactionPool
 from ..types import TransActionOutput, TransactionData
 from ..pool.pool import Pool
@@ -7,8 +11,10 @@ from ..block.block import Block, BlockData
 from flask import jsonify, make_response, Response
 
 class Chain:
-    def __init__(self, transactionPool: TransactionPool) -> None:
+    def __init__(self, transactionPool: TransactionPool, nodeRegister:NodeRegistry) -> None:
         self.chain:list[BlockData] = []
+        self.newChain:list[BlockData] = []
+        self.nodes = nodeRegister
         self.transactionPool = transactionPool
     
     def generate(self, transaction:TransactionData) -> list[BlockData]:
@@ -42,10 +48,18 @@ class Chain:
             return make_response(jsonify(self.generate(transaction)), 200)
         
         priorBlock      = self.chain[-1]
-        initialBlock    = Block(priorBlock["index"]+1, transaction, priorBlock["currentHash"]).generateBlock(self.transactionPool, priorBlock)
-        self.chain.append(initialBlock)
+        currentBlock    = Block(priorBlock["index"]+1, transaction, priorBlock["currentHash"]).generateBlock(self.transactionPool, priorBlock)
         
-        return make_response(jsonify(self.chain), 200)
+        self.newChain = self.chain
+        self.newChain.append(currentBlock)
+        
+        requestHandler = RequestHandler(self.nodes)
+        if requestHandler.validateChain(self):
+            self.chain.append(currentBlock)
+            return make_response(jsonify(self.chain), 200)
+        
+        return make_response(jsonify({"info":"could not validate chain","status":500}), 500)
+        
         
     def nuke(self) -> Response:
         self.chain.clear()
@@ -83,4 +97,22 @@ class Chain:
             return make_response(jsonify({"info":"no transaction history found for this user", "status":"404"}), 404)
         
         return make_response(jsonify({"balance":balance}), 200)
-        
+    
+    def consolidate(self, incomingChain:Any)->Response:
+        try:
+            incomingChain = json.loads(incomingChain)
+            currentChain = json.dumps(self.chain)
+            
+            if incomingChain == currentChain:
+                return make_response(jsonify({"info":"chain already in sync"}), 200)
+            
+            tempChain = self
+            tempChain.chain = incomingChain
+            checker = RequestHandler(self.nodes)
+            if checker.validateChain(tempChain):
+                self.chain = tempChain.chain
+                return make_response(jsonify({"info":"chain succesfully consolidated"}), 200)
+            
+            return make_response(jsonify({"info":"could not consolidate chain", "status":500}), 500)
+        except:
+            return make_response(jsonify({"info":"could not handle request", "status":500}), 500)
