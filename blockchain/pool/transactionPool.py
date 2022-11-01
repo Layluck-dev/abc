@@ -1,7 +1,7 @@
 from typing import Any, Tuple
 from flask import jsonify, make_response, Response
 
-from ..types import TransActionOutput
+from ..types import TransActionOutput, TransactionOutputs
 
 class TransactionPool():
     def __init__(self) -> None:
@@ -10,7 +10,7 @@ class TransactionPool():
     def appendTransaction(self, transactionOutput:TransActionOutput) -> None:
         self.list.append(transactionOutput)
         
-    def appendTransactions(self, outputs:Tuple[TransActionOutput, TransActionOutput]) -> None:
+    def appendTransactions(self, outputs:TransactionOutputs) -> None:
         self.list.append(outputs[0])
         self.list.append(outputs[1])
         

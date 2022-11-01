@@ -16,7 +16,7 @@ class Chain:
         if len(self.chain) > 0:
             lastBlock = self.chain[-1]
 
-        initialBlock = Block(1, transaction).generateBlock(lastBlock)
+        initialBlock = Block(1, transaction).generateBlock(self.transactionPool, lastBlock)
         self.chain.append(initialBlock)
         
         return self.chain
@@ -42,7 +42,7 @@ class Chain:
             return make_response(jsonify(self.generate(transaction)), 200)
         
         priorBlock      = self.chain[-1]
-        initialBlock    = Block(priorBlock["index"]+1, transaction, priorBlock["currentHash"]).generateBlock(priorBlock)
+        initialBlock    = Block(priorBlock["index"]+1, transaction, priorBlock["currentHash"]).generateBlock(self.transactionPool, priorBlock)
         self.chain.append(initialBlock)
         
         return make_response(jsonify(self.chain), 200)
@@ -74,7 +74,7 @@ class Chain:
     
     def getBalanceByUid(self, balanceReq:Any):
         try:
-            userID:float = float(balanceReq["userID"])
+            userID:int = int(balanceReq["userID"])
         except:
             return make_response(jsonify({"info":"malformed request", "status":"400"}), 400)
         

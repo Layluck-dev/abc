@@ -1,8 +1,9 @@
 
 import hashlib
-from time import time
+import time
 from ..types import TransactionData
 
+# mypy: ignore-errors
 from ecdsa import SigningKey, NIST521p
 
 class Client:
@@ -17,9 +18,9 @@ class Client:
             "senderID":             3,
             "receiverID":           12,
             "amount":               77.4,
-            "balance":              100,
             "publicKey":            self.publicKey,
             "signature":            self.privateKey.sign(hashstr),
+            "inputHash":            "AlphaTransaction",
             "transactionOutput":    None
         }
 

@@ -1,4 +1,5 @@
 import hashlib
+# mypy: ignore-errors
 from ecdsa import VerifyingKey, NIST521p
 
 from ..types import TransactionData

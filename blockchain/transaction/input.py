@@ -3,7 +3,7 @@ import hashlib
 from typing import Tuple
 import uuid
 
-from ..types import TransActionOutput, TransactionData
+from ..types import TransActionOutput, TransactionData, TransactionOutputs
 
 class TransActionInput:
     def validateBalance(self, balance: float, amount: float) -> float:
@@ -12,7 +12,7 @@ class TransActionInput:
     def generateKey(self, balance: float, amount: float, isRemainder: bool) -> str:
         return hashlib.sha256(bytes(f"{balance}{str(isRemainder)}{amount}", 'utf-8')).hexdigest()
     
-    def generateOutputs(self, transaction: TransactionData, balance:float) -> Tuple[TransActionOutput, TransActionOutput] | None:
+    def generateOutputs(self, transaction: TransactionData, balance:float) -> TransactionOutputs | None:
         remainder = self.validateBalance(balance, transaction["amount"])
         
         if remainder < 0:

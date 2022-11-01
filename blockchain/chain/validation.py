@@ -8,7 +8,7 @@ from ..block.block import Block
 
 class ChainValidation():
     def __init__(self) -> None:
-        mockTransaction:TransactionData = {"timestamp":time.time(), "senderID":0, "receiverID":0, "amount":0, "balance":0, "transactionOutput": None}
+        mockTransaction:TransactionData = {"timestamp":time.time(), "senderID":0, "receiverID":0, "amount":0, "transactionOutput":None, "publicKey":"mockString", "signature":"mockSignature", "inputHash":"mockHash"}
         self.block:Block                = Block(0, mockTransaction)
     
     def validate(self, blockchain:Chain) -> Response:

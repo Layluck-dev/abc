@@ -3,6 +3,7 @@ import time
 from .input import TransActionInput
 from ..types import TransactionData
 
+# mypy: ignore-errors
 from ecdsa import SigningKey, NIST521p
 
 class AlphaTransaction:

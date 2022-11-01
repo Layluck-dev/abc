@@ -27,3 +27,5 @@ class BlockData(TypedDict):
     priorHash:    str
     currentHash:  str
     transaction:  TransactionData
+
+TransactionOutputs = Tuple[TransActionOutput, TransActionOutput]

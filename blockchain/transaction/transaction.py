@@ -8,7 +8,7 @@ from ..transaction.verification import TransactionVerification
 from ..transactionRequest.mockClient import Client
 
 from ..transaction.input import TransActionInput
-from ..types import TransactionData
+from ..types import TransactionData, TransactionOutputs
 from ..pool.pool import Pool
 
 class Transaction():
@@ -41,12 +41,15 @@ class Transaction():
         
         balance = self.chain.getBalanceByUid(transactionData["senderID"])
                 
-        transactionVerification = TransactionVerification(transactionData, balance)
+        transactionVerification = TransactionVerification(transactionData)
         if not transactionVerification.verifyTransaction():
             return make_response(jsonify({"info":"signature does not resolve", "status":"401"}), 401)
         
         inputObject = TransActionInput()
-        outputs = inputObject.generateOutputs(transactionData)
+        outputs = inputObject.generateOutputs(transactionData, balance)
+        if not outputs:
+            return make_response(jsonify({"info":"No previous transaction data found", "status":"404"}), 404)
+        
         self.transactionOutputs.appendTransactions(outputs)
         transactionData["transactionOutput"] = outputs
     
