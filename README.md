@@ -19,6 +19,10 @@ For more information see [this page](https://uoa-eresearch.github.io/eresearch-c
 To run the server locally: `flask --app blockchain --debug run`  
 also rename the file folder to 'blockchain' to prevent import issues :^)
 
+# Tracking assignments
+For each assignment there is a sepparate branch that will be left unchanged after the work for that assignment is finished.  
+This way changes between assignments can be viewed more easily.  
+  
 # OPDR 1-2
 - Why are timestamps important?  
 Because a timestamp is used to generate a hash. Therefore if the timetsamp is tempered with, the hash and by extension the blockchain will be rendered inavild.  
