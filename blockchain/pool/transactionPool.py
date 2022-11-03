@@ -69,10 +69,15 @@ class TransactionPool():
         
         return None
     
-    def getOpenRemainder(self, userID:int) -> Response:
-        result = self.openRemainderByUid(userID)
+    def getOpenRemainder(self, userID:Any) -> Response:
+        try:
+            userId = int(userID["userID"])
+            result = self.openRemainderByUid(userId)
+            
+            if not result:
+                return make_response(jsonify({"info": "no open transaction found for this user", "status": "404"}), 404)
+            return make_response(jsonify(result), 200)
         
-        if not result:
-            return make_response(jsonify({"info": "no open transaction found for this user", "status": "404"}), 404)
+        except:
+            return make_response(jsonify({"info": "malformed request", "status": "400"}), 400)
         
-        return make_response(jsonify(result))

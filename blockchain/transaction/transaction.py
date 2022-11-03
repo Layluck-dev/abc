@@ -5,7 +5,6 @@ from ..chain.chain import Chain
 
 from ..pool.transactionPool import TransactionPool
 from ..transaction.verification import TransactionVerification
-from ..transactionRequest.mockClient import Client
 
 from ..transaction.input import TransActionInput
 from ..types import TransactionData, TransactionOutputs
@@ -34,10 +33,6 @@ class Transaction():
         
         if not transactionData["amount"] >= 0:
             return make_response(jsonify({"info":"no cheeky exploits for you", "status":"400"}), 400)
-        
-        #Temporarily mock a transaction, because there is no client currently
-        mockClient = Client()
-        transactionData = mockClient.pseudoTransaction
         
         balance = self.chain.getBalanceByUid(transactionData["senderID"])
                 

@@ -51,24 +51,28 @@ def create_app(test_config=None):
     def pollTransactionOutput():
         return transactionOutputs.pollOutput(request.json)
     
+    @server.get(baseUrl + 'openRemainder')
+    def getOpenRemainder():
+        return transactionOutputs.getOpenRemainder(request.json)
+    
     @server.get(baseUrl + 'blockchain/length')
     def getChainlength():
-        return chain.getHeight()
+        return chain.getLength()
 
     @server.get(baseUrl + 'balance')
     def getBalance():
         return chain.getBalanceByUid(request.json)
     
-    @server.get(baseUrl + '/consensus')
+    @server.get(baseUrl + 'consensus')
     def getGetChainValidation():
         return ChainValidation().getValidation(chain, request.json)
     
-    @server.post(baseUrl + '/assert')
+    @server.post(baseUrl + 'assert')
     def incomingChain():
         isValid = ChainValidation().getValidation(chain, request.json).ok
         
-        if isValid:
-            pass
+        if not isValid:
+            return make_response(jsonify({"info":"chain could not be validated","status":400}),400)
         
         return make_response(jsonify({"info":"chain successfully consolidated","status":200}),200)
         
