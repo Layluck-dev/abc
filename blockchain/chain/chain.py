@@ -54,7 +54,7 @@ class Chain:
         self.newChain.append(currentBlock)
         
         requestHandler = RequestHandler(self.nodes)
-        if requestHandler.validateChain(self):
+        if requestHandler.validateChain(self.chain):
             self.chain.append(currentBlock)
             return make_response(jsonify(self.chain), 200)
         
@@ -109,7 +109,7 @@ class Chain:
             tempChain = self
             tempChain.chain = incomingChain
             checker = RequestHandler(self.nodes)
-            if checker.validateChain(tempChain):
+            if checker.validateChain(tempChain.chain):
                 self.chain = tempChain.chain
                 return make_response(jsonify({"info":"chain succesfully consolidated"}), 200)
             

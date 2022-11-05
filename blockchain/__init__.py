@@ -15,7 +15,7 @@ def create_app(test_config=None):
     pool                = Pool()
     transactionOutputs  = TransactionPool()
     nodeRegistry        = NodeRegistry()
-    chain               = Chain(transactionOutputs)
+    chain               = Chain(transactionOutputs, nodeRegistry)
     transaction         = Transaction(pool, transactionOutputs, chain)
     baseUrl             = "/api/"
     

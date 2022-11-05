@@ -5,7 +5,7 @@ from typing import Tuple
 import requests
 import json
 
-from ..chain.chain import Chain
+from ..types import BlockData
 
 from .register import NodeRegistry
 
@@ -31,12 +31,12 @@ class RequestHandler():
         
         return (100 / len(self.registry) * OKs) > 60
     
-    def validateChain(self, chain:Chain) -> bool:
+    def validateChain(self, chainData:list[BlockData]) -> bool:
         endpoint = "consensus"
-        return self.pollNodes(endpoint, body=json.dumps(chain.chain))
+        return self.pollNodes(endpoint, body=json.dumps(chainData))
     
-    def assertChain(self, chain:Chain) -> None:
+    def assertChain(self, chainData:list[BlockData]) -> None:
         endpoint = "consensus/assert"
-        self.pollNodes(endpoint, "post", body=json.dumps(chain.chain))
+        self.pollNodes(endpoint, "post", body=json.dumps(chainData))
     
     
