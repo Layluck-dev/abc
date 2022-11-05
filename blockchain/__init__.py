@@ -75,6 +75,14 @@ def create_app(test_config=None):
             return make_response(jsonify({"info":"chain could not be validated","status":400}),400)
         
         return make_response(jsonify({"info":"chain successfully consolidated","status":200}),200)
+    
+    @server.post(baseUrl + 'nodes/register')
+    def registerNode():
+        nodeRegistry.registerNode(request.json)
+        
+    @server.get(baseUrl + 'nodes/get')
+    def getNodes():
+        nodeRegistry.getNodes()
         
     
     return server
