@@ -1,6 +1,7 @@
 # Welcome
 
-To the ABC (Avans BlockChain) repo.
+To the ABC (Avans BlockChain) repo.  
+Video presentation: https://youtu.be/3w6_R-w3ako
 
 # Setup your Python virtual environments
 Create a new Python virtual environment: `python -m venv _env`  
